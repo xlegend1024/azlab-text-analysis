@@ -1,0 +1,267 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "yournameIntial": {
+            "type": "String",
+            "maxLength": 3,
+            "minLength": 2
+        },
+        "logicapp_scoring_name": {
+            "defaultValue": "scoring",
+            "type": "String"
+        },
+        "logicapp_tweetsearch_name": {
+            "defaultValue": "tweets",
+            "type": "String"
+        },
+        "eventhub_namespace_name": {
+            "defaultValue": "eventns",
+            "type": "String"
+        },
+        "eventhub_eventhub_name": {
+            "defaultValue": "eventhub",
+            "type": "String"
+        },
+        "blob_storage_name": {
+            "defaultValue": "blob",
+            "type": "String"
+        },
+        "cosmosdb_doc_name": {
+            "defaultValue": "cos",
+            "type": "String"
+        },
+        "aml_workspace_name": {
+            "defaultValue": "aml",
+            "type": "String"
+        },
+        "serviceRegion":{
+            "defaultValue": "westus2",
+            "type": "String",
+            "allowedValues": ["westus2", "eastus2"]
+        },
+        "adb_workspace_name":{
+            "defaultValue": "adb",
+            "type": "String"
+        },
+        "adb_tier":{
+            "defaultValue": "premium",
+            "type": "String"
+        }
+    },
+    "variables": {
+        "uid": "[uniqueString(resourceGroup().id)]",
+        "logicapp1":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('logicapp_tweetsearch_name')),variables('uid'))]",
+        "logicapp2":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('logicapp_scoring_name')),variables('uid'))]",
+        "eventhubns":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('eventhub_namespace_name')),variables('uid'))]",
+        "eventhubs":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('eventhub_eventhub_name')),variables('uid'))]",
+        "blob":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('blob_storage_name')),variables('uid'))]",
+        "adb": "[concat(toLower(parameters('yournameIntial')), toLower(parameters('adb_workspace_name')),variables('uid'))]",
+        "aml":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('aml_workspace_name')),variables('uid'))]",
+        "cos":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('cosmosdb_doc_name')),variables('uid'))]",
+        "amlstorage": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
+        "amlkey" : "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
+        "amlappin": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
+        "definition" : "[concat('{\"contentVersion\":\"1.0.0.0\",\"parameters\":{},\"actions\":{},\"triggers\":{},\"outputs\":{},\"$schema\":\"\"}')]",
+        "managedResourceGroupId": "[concat(subscription().id, '/resourceGroups/', variables('managedResourceGroupName'))]",
+        "managedResourceGroupName": "[concat('databricks-rg-', variables('adb'), '-', uniqueString(variables('adb'), resourceGroup().id))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2015-04-08",
+            "name": "[variables('cos')]",
+            "location": "[parameters('serviceRegion')]",
+            "tags": {
+                "defaultExperience": "Core (SQL)"
+            },
+            "kind": "GlobalDocumentDB",
+            "properties": {
+                "enableAutomaticFailover": false,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Strong",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "West US 2",
+                        "provisioningState": "Succeeded",
+                        "failoverPriority": 0
+                    }
+                ],
+                "capabilities": []
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces",
+            "apiVersion": "2017-04-01",
+            "name": "[variables('eventhubns')]",
+            "location": "[parameters('serviceRegion')]",
+            "sku": {
+                "name": "Standard",
+                "tier": "Standard",
+                "capacity": 1
+            },
+            "properties": {
+                "isAutoInflateEnabled": false,
+                "maximumThroughputUnits": 0
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2018-07-01",
+            "name": "[variables('blob')]",
+            "location": "[parameters('serviceRegion')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(variables('eventhubns'), '/RootManageSharedAccessKey')]",
+            "location": "[parameters('serviceRegion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', variables('eventhubns'))]"
+            ],
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/eventhubs",
+            "apiVersion": "2017-04-01",
+            "name": "[concat(variables('eventhubns'),'/',variables('eventhubs'))]",
+            "location": "[parameters('serviceRegion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', variables('eventhubns'))]"
+            ],
+            "properties": {
+                "messageRetentionInDays": 1,
+                "partitionCount": 2,
+                "status": "Active"
+            }
+        },
+        {
+            "type": "Microsoft.MachineLearningServices/workspaces",
+            "apiVersion": "2018-11-19",
+            "name": "[variables('aml')]",
+            "location": "[parameters('serviceRegion')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults',variables('amlkey'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('amlstorage'))]",
+                "[resourceId('Microsoft.Insights/components',variables('amlappin'))]"
+            ],
+            "identity": {
+                "type": "systemAssigned"
+            },
+            "properties": {
+                "keyVault": "[resourceId('Microsoft.KeyVault/vaults',variables('amlkey'))]",
+                "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts',variables('amlstorage'))]",
+                "applicationInsights":  "[resourceId('Microsoft.Insights/components',variables('amlappin'))]"
+            }
+        },
+        {
+            "apiVersion": "2016-10-01",
+            "name": "[variables('logicapp1')]",
+            "type": "Microsoft.Logic/workflows",
+            "location": "[parameters('serviceRegion')]",
+            "properties": {
+                "definition": "[json(variables('definition'))]",
+                "state": "Enabled"
+            }
+        },
+        {
+            "apiVersion": "2016-10-01",
+            "name": "[variables('logicapp2')]",
+            "type": "Microsoft.Logic/workflows",
+            "location": "[parameters('serviceRegion')]",
+            "properties": {
+                "definition": "[json(variables('definition'))]",
+                "state": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2018-07-01",
+            "name": "[variables('amlstorage')]",
+            "location": "[parameters('serviceRegion')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage"
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "apiVersion": "2015-06-01",
+            "name": "[variables('amlkey')]",
+            "location": "[parameters('serviceRegion')]",
+            "properties": {
+                "accessPolicies": [],
+                "enabledForDeployment": true,
+                "enabledForTemplateDeployment": true,
+                "enabledForVolumeEncryption": true,
+                "sku": {
+                    "name": "Standard",
+                    "family": "A"
+                },
+                "tenantId": "[subscription().tenantId]"
+            }
+        },
+        {
+            "type": "Microsoft.Insights/components",
+            "apiVersion": "2015-05-01",
+            "name": "[variables('amlappin')]",
+            "location": "[parameters('serviceRegion')]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web"
+            }
+        },
+        {
+            "type": "Microsoft.Databricks/workspaces",
+            "apiVersion": "2018-04-01",
+            "name": "[variables('adb')]",
+            "location": "[parameters('serviceRegion')]",
+            "sku": {
+                "name": "[parameters('adb_tier')]"
+            },
+            "properties": {
+                "ManagedResourceGroupId": "[variables('managedResourceGroupId')]"
+            }
+        }
+    ]
+}
