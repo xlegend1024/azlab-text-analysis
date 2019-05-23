@@ -61,6 +61,7 @@
         "cos":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('cosmosdb_doc_name')),variables('uid'))]",
         "amlstorage": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
         "amlkey" : "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
+        "amlacr" : "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
         "amlappin": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
         "definition" : "[concat('{\"contentVersion\":\"1.0.0.0\",\"parameters\":{},\"actions\":{},\"triggers\":{},\"outputs\":{},\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"}')]",
         "managedResourceGroupId": "[concat(subscription().id, '/resourceGroups/', variables('managedResourceGroupName'))]",
@@ -180,6 +181,7 @@
             "name": "[variables('aml')]",
             "location": "[parameters('serviceRegion')]",
             "dependsOn": [
+                "[resourceId('Microsoft.ContainerRegistry/registries',variables('amlacr'))]",
                 "[resourceId('Microsoft.KeyVault/vaults',variables('amlkey'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts',variables('amlstorage'))]",
                 "[resourceId('Microsoft.Insights/components',variables('amlappin'))]"
@@ -188,6 +190,7 @@
                 "type": "systemAssigned"
             },
             "properties": {
+                "containerRegistry": "[resourceId('Microsoft.ContainerRegistry/registries',variables('amlacr'))]",
                 "keyVault": "[resourceId('Microsoft.KeyVault/vaults',variables('amlkey'))]",
                 "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts',variables('amlstorage'))]",
                 "applicationInsights":  "[resourceId('Microsoft.Insights/components',variables('amlappin'))]"
@@ -249,6 +252,19 @@
             "kind": "web",
             "properties": {
                 "Application_Type": "web"
+            }
+        },
+        {
+            "type": "Microsoft.ContainerRegistry/registries",
+            "sku": {
+                "name": "Basic"
+            },
+            "kind": "Registry",
+            "name": "[variables('amlacr')]",
+            "apiVersion": "2017-10-01",
+            "location": "[parameters('serviceRegion')]",
+            "properties": {
+                "adminUserEnabled": true
             }
         },
         {
