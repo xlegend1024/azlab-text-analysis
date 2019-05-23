@@ -8,11 +8,11 @@
             "minLength": 2
         },
         "logicapp_scoring_name": {
-            "defaultValue": "scoring",
+            "defaultValue": "2scoring",
             "type": "String"
         },
         "logicapp_tweetsearch_name": {
-            "defaultValue": "tweets",
+            "defaultValue": "1tweets",
             "type": "String"
         },
         "eventhub_namespace_name": {
@@ -50,7 +50,7 @@
         }
     },
     "variables": {
-        "uid": "[uniqueString(resourceGroup().id)]",
+        "uid": "[uniqueString(toLower(parameters('yournameIntial')), resourceGroup().id)]",
         "logicapp1":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('logicapp_tweetsearch_name')),variables('uid'))]",
         "logicapp2":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('logicapp_scoring_name')),variables('uid'))]",
         "eventhubns":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('eventhub_namespace_name')),variables('uid'))]",
@@ -62,9 +62,9 @@
         "amlstorage": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
         "amlkey" : "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
         "amlappin": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
-        "definition" : "[concat('{\"contentVersion\":\"1.0.0.0\",\"parameters\":{},\"actions\":{},\"triggers\":{},\"outputs\":{},\"$schema\":\"\"}')]",
+        "definition" : "[concat('{\"contentVersion\":\"1.0.0.0\",\"parameters\":{},\"actions\":{},\"triggers\":{},\"outputs\":{},\"$schema\":\"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#\"}')]",
         "managedResourceGroupId": "[concat(subscription().id, '/resourceGroups/', variables('managedResourceGroupName'))]",
-        "managedResourceGroupName": "[concat('databricks-rg-', variables('adb'), '-', uniqueString(variables('adb'), resourceGroup().id))]"
+        "managedResourceGroupName": "[concat('databricks-azlab', variables('uid'))]"
     },
     "resources": [
         {
