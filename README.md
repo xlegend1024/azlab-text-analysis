@@ -10,7 +10,7 @@
 
 1. Twitter Account
 
-* Enable Twitter Developer [link](https://developer.twitter.com/)
+> Optional) _* Enable Twitter Developer [link](https://developer.twitter.com/)_
 
 1. Azure Account and Subsciprtion
 
