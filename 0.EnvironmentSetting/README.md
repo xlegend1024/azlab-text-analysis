@@ -1,12 +1,13 @@
-# Create Lab Environment
+# 0. Create Lab Environment
 
 > Provisioning will take less then 5 mins
 
-0.1 Login Azure Portal
+## 0.1 Login Azure Portal
 
-0.2 Create Resources
+## 0.2 Create Resources
 
-Pleaes press _Ctrl_ and click following link.
+> Pleaes press _Ctrl_ and click following link.
+> Or open the link in a new tab.
 
 [Deploy Resources from Azure Portal](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fxlegend1024%2Fazlab-text-analysis%2Fmaster%2F0.EnvironmentSetting%2Fazlab_template.json)
 
@@ -16,9 +17,12 @@ Type your name initial for example, hs.
 
 > Maximum length is 2
 
+![deploy](../images/0.1.png)
+
+
 Click _Purchase_ to continue
 
-0.3 Review the environment
+## 0.3 Review the environment
 
 Once you successfully deploy the resources you will see following resources in your resource group.
 
