@@ -1,5 +1,7 @@
 # Create Lab Environment
 
+> Provisioning will take less then 5 mins
+
 0.1 Login Azure Portal
 
 0.2 Create Resources
