@@ -43,10 +43,6 @@
         "adb_workspace_name":{
             "defaultValue": "adb",
             "type": "String"
-        },
-        "adb_tier":{
-            "defaultValue": "premium",
-            "type": "String"
         }
     },
     "variables": {
@@ -57,6 +53,7 @@
         "eventhubs":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('eventhub_eventhub_name')),variables('uid'))]",
         "blob":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('blob_storage_name')),variables('uid'))]",
         "adb": "[concat(toLower(parameters('yournameIntial')), toLower(parameters('adb_workspace_name')),variables('uid'))]",
+        "adb_tier": "premium",
         "aml":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('aml_workspace_name')),variables('uid'))]",
         "cos":"[concat(toLower(parameters('yournameIntial')), toLower(parameters('cosmosdb_doc_name')),variables('uid'))]",
         "amlstorage": "[concat(toLower(parameters('aml_workspace_name')),variables('uid'))]",
@@ -143,7 +140,42 @@
                     "keySource": "Microsoft.Storage"
                 },
                 "accessTier": "Hot"
-            }
+            },
+            "resources": [
+              {
+                "type": "blobServices/containers",
+                "apiVersion": "2018-03-01-preview",
+                "name": "searchresults",
+                "dependsOn": [
+                    "[variables('blob')]"
+                ],
+                "properties": {
+                  "publicAccess": "None"
+                }
+              },
+              {
+                "type": "blobServices/containers",
+                "apiVersion": "2018-03-01-preview",
+                "name": "sentiments",
+                "dependsOn": [
+                    "[variables('blob')]"
+                ],
+                "properties": {
+                  "publicAccess": "None"
+                }
+              },
+              {
+                "type": "blobServices/containers",
+                "apiVersion": "2018-03-01-preview",
+                "name": "searchresults",
+                "dependsOn": [
+                    "[variables('blob')]"
+                ],
+                "properties": {
+                  "publicAccess": "None"
+                }
+              }
+            ]
         },
         {
             "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
@@ -273,7 +305,7 @@
             "name": "[variables('adb')]",
             "location": "[parameters('serviceRegion')]",
             "sku": {
-                "name": "[parameters('adb_tier')]"
+                "name": "[variables('adb_tier')]"
             },
             "properties": {
                 "ManagedResourceGroupId": "[variables('managedResourceGroupId')]"
