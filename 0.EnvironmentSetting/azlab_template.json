@@ -156,7 +156,7 @@
               {
                 "type": "blobServices/containers",
                 "apiVersion": "2018-03-01-preview",
-                "name": "sentiments",
+                "name": "sentiment",
                 "dependsOn": [
                     "[variables('blob')]"
                 ],
@@ -167,7 +167,7 @@
               {
                 "type": "blobServices/containers",
                 "apiVersion": "2018-03-01-preview",
-                "name": "searchresults",
+                "name": "temp",
                 "dependsOn": [
                     "[variables('blob')]"
                 ],
