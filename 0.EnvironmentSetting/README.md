@@ -51,4 +51,4 @@ Once you successfully deploy the resources you will see following resources in y
 
 ---
 
-[Next](https://github.com/xlegend1024/azlab-text-analysis/blob/master/1.LogicApp/README.md)
+[Next > 1. Ingest Data](https://github.com/xlegend1024/azlab-text-analysis/blob/master/1.LogicApp/README.md)
