@@ -116,12 +116,12 @@ Add HTTP module
 |parameter name|value|
 |---|---|
 |Method|POST|
-|URI|Copy from Azure Databricks Notebook 3|
+|URI|Copy from Azure Databricks Notebook 4, cell 34th, scoring_uri|
 |Headers|```Authorization```|
 |Headers|```Content-Type```|
-|Headers-Authorization|```Bearer``` ******|
+|Headers-Authorization|```Bearer``` Copy from Azure Databricks Notebook 4, cell 34th, api_key|
 |Headers-Content-Type|```application/json```|
-|Body|```@{outputs('Compose')}```|
+|Body|```@base64(outputs('Compose'))```|
 
 ![](../images/4.6.png)
 
