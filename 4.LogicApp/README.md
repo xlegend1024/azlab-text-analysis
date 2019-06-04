@@ -2,7 +2,7 @@
 
 Create logic to get real-time prediction
 
-## 4.1 Flow overview
+## 4.1 Logic overview
 
 This logic app consist with three parts Recurrence, Search tweets and For each modules.
 
