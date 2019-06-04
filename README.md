@@ -21,14 +21,22 @@
 
 ### [0. Create Lab Environment](https://github.com/xlegend1024/azlab-text-analysis/tree/master/0.EnvironmentSetting)
 
-Create
+* Create workshop environment
 
 ### [1. Logic App](https://github.com/xlegend1024/azlab-text-analysis/tree/master/1.LogicApp)
 
+* Create a logic to collect tweet text from Twitter
+
 ### [2. Azure Databricks](https://github.com/xlegend1024/azlab-text-analysis/tree/master/2.ADB)
+
+* Understand data and train data to select a model
 
 ### [3. Azure Machine Learning](https://github.com/xlegend1024/azlab-text-analysis/tree/master/3.AML)
 
+* Register the model to Azure Machine Learning Service and deploy it as web service on AKS
+
 ### [4. Logic App](https://github.com/xlegend1024/azlab-text-analysis/tree/master/4.LogicApp)
+
+* Get a real-time predictinon and save the result to CosmosDB
 
 ### Delete Resource Group
