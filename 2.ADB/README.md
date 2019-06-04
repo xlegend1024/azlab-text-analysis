@@ -1,4 +1,4 @@
-# 2. Build a Model
+# 2. Data Analysis in scale
 
 ## Create Cluster
 
@@ -8,9 +8,11 @@
 
 Go to 'Azure Databricks' page by clicking left top conner icon
 
+And click 'Import Library' icon
+
 ![library](../images/2.2.png)
 
-
+Import Azure Machine Learning SDK to your Databricks cluster
 
 From PyPi
 ```
@@ -23,13 +25,16 @@ Please click _Confirm_ button to install library to all clusters in Azure Databr
 
 ![library](../images/2.4.png)
 
-
-From Maven
-```
-com.microsoft.azure:azure-eventhubs-spark_2.11:2.3.10
-```
-![library](../images/2.5.png)
-
 ## Import Notebooks
 
+And import databricks archive from following URL
+
+```text
+https://github.com/xlegend1024/azlab-text-analysis/blob/master/2.ADB/Sentiment-Analysis.dbc
+```
+
 ![notebook](../images/2.6.png)
+
+---
+
+[Next > 2.1 Understand Data](https://github.com/xlegend1024/azlab-text-analysis/blob/master/2.ADB/UnderstandData.md)
