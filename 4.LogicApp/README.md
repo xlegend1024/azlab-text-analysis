@@ -1,38 +1,53 @@
-# Real-time scoring
+# 4. Real-time scoring
 
 Create logic to get real-time prediction
 
-## Flow overview
+## 4.1 Flow overview
+
+This logic app consist with three parts Recurrence, Search tweets and For each modules.
+
+The last For each module consist with multiple modules. 
 
 ![](../images/4.0.png)
 
-It has three parts
+### 4.1.1 Recurrence
 
-### Recurrence
+* Add Recurrence module and configure it like following
 
 ![](../images/4.1.png)
 
-### Search Tweets
+### 4.1.2 Search Tweets
+
+* Add Twitter Search and type key word to search 
 
 ![](../images/4.2.png)
 
-### For each
+### 4.1.3 For each
 
-Select Twitter body
+* Add For each module as the next action
+* Select Twitter body
 
-#### For each > Condition
+#### 4.1.3.1 For each > Condition
 
-Select TweetLanguageCode and type ```en```
+* Add Condition action fron Control module
+
+![](../images/4.2.2.png)
+
+* Select TweetLanguageCode for the condition and type ```en``` for the value
 
 ![](../images/4.3.png)
 
-#### For each > Condition > Ture
+#### 4.1.3.2 For each > Condition > True
 
-#### For each > Condition > Ture > Parse JSON
+Click _'Add an action'_ inside True
+
+> We will leave False empty
+
+#### 4.1.3.3 For each > Condition > Ture > Parse JSON
 
 |parameter name|value|
 |---|---|
-|content|@{items('For_each')}|
+|content|```@{items('For_each')}```|
 
 Copy following json schema
 
@@ -70,63 +85,8 @@ Copy following json schema
         "TweetedBy": {
             "type": "string"
         },
-        "UserDetails": {
-            "properties": {
-                "Description": {
-                    "type": "string"
-                },
-                "FavouritesCount": {
-                    "type": "integer"
-                },
-                "FollowersCount": {
-                    "type": "integer"
-                },
-                "FriendsCount": {
-                    "type": "integer"
-                },
-                "FullName": {
-                    "type": "string"
-                },
-                "Id": {
-                    "type": "integer"
-                },
-                "Location": {
-                    "type": "string"
-                },
-                "ProfileImageUrl": {
-                    "type": "string"
-                },
-                "StatusesCount": {
-                    "type": "integer"
-                },
-                "UserName": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "UserMentions": {
-            "items": {
-                "properties": {
-                    "FullName": {
-                        "type": "string"
-                    },
-                    "Id": {
-                        "type": "integer"
-                    },
-                    "UserName": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "Id",
-                    "FullName",
-                    "UserName"
-                ],
-                "type": "object"
-            },
-            "type": "array"
-        }
+        "UserDetails": {},
+        "UserMentions": {}
     },
     "type": "object"
 }
@@ -134,9 +94,9 @@ Copy following json schema
 
 ![](../images/4.4.png)
 
-#### For each > Condition > Ture > Compose
+#### 4.1.3.4 For each > Condition > Ture > Compose
 
-Copy next json text to _Input_ parameter
+Copy next JSON text to _Input_ parameter
 
 ```json
 [
@@ -149,25 +109,29 @@ Copy next json text to _Input_ parameter
 
 ![](../images/4.5.png)
 
-#### For each > Condition > Ture > HTTP
+#### 4.1.3.5 For each > Condition > Ture > HTTP
+
+Add HTTP module
 
 |parameter name|value|
 |---|---|
 |Method|POST|
 |URI|Copy from Azure Databricks Notebook 3|
-|Headers|Authorization|
-|Headers|Content-Type|
-|Headers-Authorization|Bearer ******|
-|Headers-Content-Type|application/json|
-|Body|@{outputs('Compose')}|
+|Headers|```Authorization```|
+|Headers|```Content-Type```|
+|Headers-Authorization|```Bearer``` ******|
+|Headers-Content-Type|```application/json```|
+|Body|```@{outputs('Compose')}```|
 
 ![](../images/4.6.png)
 
-#### For each > Condition > Ture > Parse JSON 2
+#### 4.1.3.6 For each > Condition > Ture > Parse JSON 2
+
+* Add Parse JSON module
 
 |parameter name|value|
 |---|---|
-|content|json(body('HTTP'))|
+|content|```json(body('HTTP'))```|
 
 ```json
 {
@@ -180,7 +144,9 @@ Copy next json text to _Input_ parameter
 
 ![](../images/4.7.png)
 
-#### For each > Condition > Ture >  _For each 2_
+#### 4.1.3.7 For each > Condition > Ture >  _For each 2_
+
+* Add For each module
 
 ```json
 @body('Parse_JSON_2')
@@ -188,13 +154,15 @@ Copy next json text to _Input_ parameter
 
 ![](../images/4.8.png)
 
-#### For each > Condition > Ture >  For each 2 > _Parse JSON 3_
+#### 4.1.3.8 For each > Condition > Ture >  For each 2 > _Parse JSON 3_
+
+* Add Parse JSON module
 
 |parameter name|value|
 |---|---|
-|content|@{items('For_each')}|
+|content|```@{items('For_each')}```|
 
-Copy and pate following JSON schema to logic app
+* And then copy and pate following JSON schema to logic app
 
 ```json
 {
@@ -217,7 +185,9 @@ Copy and pate following JSON schema to logic app
 
 ![](../images/4.9.png)
 
-#### For each > Condition > Ture >  For each 2 > _Compose 2_
+#### 4.1.3.9 For each > Condition > Ture >  For each 2 > _Compose 2_
+
+* Add Compose module and, copy and paste following JSON to the module
 
 ```json
 {
@@ -230,8 +200,9 @@ Copy and pate following JSON schema to logic app
 
 ![](../images/4.10.png)
 
-#### For each > Condition > Ture >  For each 2 > _Parse JSON 4_
+#### 4.1.3.10 For each > Condition > Ture >  For each 2 > _Parse JSON 4_
 
+* Add Parse JSON module and, copy and past following JSON to the module
 
 ```json
 {
@@ -254,15 +225,19 @@ Copy and pate following JSON schema to logic app
 }
 ```
 
-#### For each > Condition > Ture >  For each 2 > _Create or Update document_
+#### 4.1.3.11 For each > Condition > Ture >  For each 2 > _Create or Update document_
 
-Add Parition Key value parameter
+* Add Create or Update document from CosmosDB module
+
+![](../images/4.10.2.png)
+
+* Add Parition Key value parameter
 
 |parameter name|value|
 |---|---|
 |Database ID|socialmedia|
 |Collection ID|twitter|
-|Document|@{outputs('Compose_2')}|
-|Parition key value|"@{body('Parse_JSON_4')?['id']}"|
+|Document|```@{outputs('Compose_2')}```|
+|Parition key value|```"@{body('Parse_JSON_4')?['id']}"```|
 
 ![](../images/4.11.png)
