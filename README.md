@@ -39,4 +39,4 @@
 
 * Get a real-time predictinon and save the result to CosmosDB
 
-### Delete Resource Group
+### 5. Delete Resource Group
