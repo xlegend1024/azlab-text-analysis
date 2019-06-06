@@ -16,7 +16,6 @@
 
 * Have contributor role of a subscription or a resource group
 
-
 ## Labs
 
 ### [0. Create Lab Environment](https://github.com/xlegend1024/azlab-text-analysis/tree/master/0.EnvironmentSetting)
