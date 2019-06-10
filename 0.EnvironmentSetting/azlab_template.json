@@ -143,7 +143,7 @@
             },
             "resources": [
               {
-                "type": "blobServices/containers",
+                "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
                 "apiVersion": "2018-03-01-preview",
                 "name": "searchresults",
                 "dependsOn": [
@@ -154,7 +154,7 @@
                 }
               },
               {
-                "type": "blobServices/containers",
+                "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
                 "apiVersion": "2018-03-01-preview",
                 "name": "sentiment",
                 "dependsOn": [
@@ -165,7 +165,7 @@
                 }
               },
               {
-                "type": "blobServices/containers",
+                "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
                 "apiVersion": "2018-03-01-preview",
                 "name": "temp",
                 "dependsOn": [
